@@ -1,0 +1,53 @@
+#!/bin/bash
+
+# Usage: .taskfile/runtime ./taskfile [task1 task2 ...]
+# Or as shebang: #!.taskfile/runtime 
+
+# Include all tasks from the actual taskfile
+source $1
+shift;
+
+# Keep track of tasks that have been run
+declare -A tasks
+
+# Allows a task to declare a dependency on another task, which will then only be run once
+function needs {
+  for task in $@; do
+    if [[ ${tasks[$1]} = "TRUE" ]]; then
+      return
+    fi
+    tasks[$1]="TRUE"
+    "task:"$1
+  done
+}
+
+# The actual tasks to execute
+jobs=()
+while [[ $# -gt 0 ]]; do
+  case $1 in
+    --*|-*) 
+      if ! type "flag:$1" >/dev/null 2>&1; then
+        echo "Unknown option $1" 1>&2
+      else
+	  	  # 'Run' the flag
+        "flag:"$1 2>/dev/null || echo "Unknown option $1"
+      fi
+      ;;
+    *)
+      jobs+=("$1");;
+    esac
+    shift
+done
+
+if [[ ${#jobs[@]} -eq 0 ]]; then
+  echo "Nothing to do"
+fi
+
+# Run the tasks
+for task in "${jobs[@]}"; do
+  if ! type "task:$task" >/dev/null 2>&1; then
+    echo "Unknown task $task" 1>&2
+  else
+    needs $task
+  fi
+done

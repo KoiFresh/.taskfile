@@ -1,0 +1,51 @@
+#!.taskfile/runtime
+
+## General functions
+
+function help {
+  cat <<EOF
+Usage: ./taskfile [OPTIONS] TASKS
+
+.taskfile: A taskrunner written in bash, which is easy to write, read and use.
+
+Available options:
+
+--help, -h          Print this help and exit
+--hello-world       Prints hello world during the build
+
+Available tasks:
+
+help         Print this help and exit
+build        Print hello world or hello taskfile depending on the flag
+build:all    Task which depends on build
+
+EOF
+  exit 0
+}
+
+## Flags
+
+function flag:-h { help; }
+function flag:--help { help; }
+
+function flag:--hello-world {
+  export HELLO_WORLD=true
+}
+
+## Tasks
+
+function task:help { help; }
+
+function task:build {
+  echo "Building..."
+  if [ -n "$HELLO_WORLD" ]; then
+    echo "Hello, World!"
+  else
+    echo "Hello, Taskfile!"
+  fi
+}
+
+function task:build:all {
+  needs build
+  echo "Building all..."
+}

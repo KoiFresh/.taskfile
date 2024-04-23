@@ -1,0 +1,24 @@
+#!/bin/bash
+
+TASKFILE_URL=${TASKFILE_URL:-https://raw.githubusercontent.com/KoiFresh/.taskfile/main}
+
+mkdir -p .taskfile
+curl -s "$TASKFILE_URL/runtime" -o .taskfile/runtime
+
+if [ ! -f taskfile ]; then
+	curl -s "$TASKFILE_URL/taskfile" -o taskfile
+fi
+
+chmod +x .taskfile/runtime
+chmod +x taskfile
+
+cat <<EOF
+🗂️  Thats it! Your directory was initilaized with a taskfile. Go modify the
+tasks or create your own. You can run the tasks with ./taskfile [TASK].
+For more information, run ./taskfile help.
+
+🚀 Happy coding!
+
+If you dont want to commit the .taskfile directory you can also run your taskfile with:
+  curl -s https://raw.githubusercontent.com/KoiFresh/.taskfile/main/runtime | bash -s ./taskfile [OPTIONS] [TASK]
+EOF
