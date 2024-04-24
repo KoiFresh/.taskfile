@@ -10,11 +10,13 @@ shift;
 # Keep track of tasks that have been run, this is used to came arround
 # declare -A (associative arrays) which is only available since bash 4.0.
 function set {
-  eval "tasks_$1=TRUE"
+  name=${1//:/_}
+  eval "tasks_$name=TRUE"
 }
 
 function get {
-  echo $(eval "echo \$tasks_$1")
+  name=${1//:/_}
+  echo $(eval "echo \$tasks_$name")
 }
 
 # Allows a task to declare a dependency on another task, which will then only be run once
