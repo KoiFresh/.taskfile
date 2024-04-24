@@ -1,25 +1,30 @@
-#!.taskfile/runtime
+#!.taskfile/runtime 
+
+# Init this taskfile with: bash taskfile init
+# After that you can use ./taskfile --help
 
 ## General functions
 
+function init {
+  curl -sL https://raw.githubusercontent.com/KoiFresh/.taskfile/main/init | bash
+}
+
 function help {
-  cat <<EOF
-Usage: ./taskfile [OPTIONS] TASKS
-
-.taskfile: A taskrunner written in bash, which is easy to write, read and use.
-
-Available options:
-
---help, -h          Print this help and exit
---hello-world       Prints hello world during the build
-
-Available tasks:
-
-help         Print this help and exit
-build        Print hello world or hello taskfile depending on the flag
-build:all    Task which depends on build
-
-EOF
+  echo "Usage: ./taskfile [OPTIONS] TASKS"
+  echo ""
+  echo ".taskfile: A taskrunner written in bash, which is easy to write, read and use."
+  echo ""
+  echo "Available options:"
+  echo ""
+  echo "--help, -h          Print this help and exit"
+  echo "--hello-world       Prints hello world during the build"
+  echo ""
+  echo "Available tasks:"
+  echo ""
+  echo "help         Print this help and exit"
+  echo "build        Print hello world or hello taskfile depending on the flag"
+  echo "build:all    Task which depends on build"
+  
   exit 0
 }
 
@@ -49,3 +54,5 @@ function task:build:all {
   needs build
   echo "Building all..."
 }
+
+$1

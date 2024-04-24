@@ -1,0 +1,8 @@
+# Taskfile specific
+.taskfile
+
+# VSCode specific
+.vscode
+
+# MacOS specific
+.DS_Store

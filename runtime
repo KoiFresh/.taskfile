@@ -1,22 +1,29 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Usage: .taskfile/runtime ./taskfile [task1 task2 ...]
 # Or as shebang: #!.taskfile/runtime 
 
 # Include all tasks from the actual taskfile
-source $1
+source $1 ""
 shift;
 
-# Keep track of tasks that have been run
-declare -A tasks
+# Keep track of tasks that have been run, this is used to came arround
+# declare -A (associative arrays) which is only available since bash 4.0.
+function set {
+  eval "tasks_$1=TRUE"
+}
+
+function get {
+  echo $(eval "echo \$tasks_$1")
+}
 
 # Allows a task to declare a dependency on another task, which will then only be run once
 function needs {
   for task in $@; do
-    if [[ ${tasks[$1]} = "TRUE" ]]; then
+    if [[ $(get $1) = "TRUE" ]]; then
       return
     fi
-    tasks[$1]="TRUE"
+    set $1
     "task:"$1
   done
 }
